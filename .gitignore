@@ -12,11 +12,18 @@ TEST*.xml
 Thumbs.db
 
 # Folders
+bin/
 log/
 obj/
 
+# User files
+*.user
+
 # Applications
 *.exe
+
+# Config files
+App.config
 
 # Large media files
 *.mp4
