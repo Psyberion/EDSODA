@@ -18,6 +18,9 @@ obj/
 # Applications
 *.exe
 
+# Config files
+App.config
+
 # Large media files
 *.mp4
 *.tiff
