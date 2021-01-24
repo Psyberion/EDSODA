@@ -16,6 +16,9 @@ bin/
 log/
 obj/
 
+# User files
+*.user
+
 # Applications
 *.exe
 
