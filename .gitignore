@@ -24,6 +24,7 @@ obj/
 
 # Config files
 App.config
+App.config.backup
 
 # Large media files
 *.mp4
