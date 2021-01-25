@@ -15,6 +15,7 @@ Thumbs.db
 bin/
 log/
 obj/
+.vs/
 
 # User files
 *.user
