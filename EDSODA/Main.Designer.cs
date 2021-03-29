@@ -37,19 +37,22 @@ namespace EDSODA
             this.btnControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnControl.Location = new System.Drawing.Point(13, 13);
+            this.btnControl.Location = new System.Drawing.Point(11, 10);
+            this.btnControl.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnControl.Name = "btnControl";
-            this.btnControl.Size = new System.Drawing.Size(465, 68);
+            this.btnControl.Size = new System.Drawing.Size(407, 51);
             this.btnControl.TabIndex = 0;
             this.btnControl.Text = "Start";
             this.btnControl.UseVisualStyleBackColor = true;
+            this.btnControl.Click += new System.EventHandler(this.btnControl_Click);
             // 
             // Main
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(494, 101);
+            this.ClientSize = new System.Drawing.Size(432, 76);
             this.Controls.Add(this.btnControl);
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "Main";
             this.Text = "EDSODA v1.00a by David McMurray";
             this.ResumeLayout(false);

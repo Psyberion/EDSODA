@@ -621,6 +621,9 @@ namespace EDSODA
                 case "AsteroidCracked":
                     CreateEvent_AsteroidCracked(eventId, eventData);
                     break;
+                case "Bounty":
+                    CreateEvent_Bounty(eventId, eventData);
+                    break;
                 case "Commander":
                     CreateEvent_Commander(eventId, eventData);
                     break;
@@ -832,6 +835,86 @@ namespace EDSODA
                     catch (Exception ex)
                     {
                         LogMessage(String.Format("CreateEvent_AsteroidCracked: Exception, {0}", ex.Message), eventId);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Creates a bounty record.
+        /// </summary>
+        /// <param name="eventId">Event ID</param>
+        /// <param name="eventLine">JSON event data</param>
+        private void CreateEvent_Bounty(int eventId, dynamic eventData)
+        {
+            if (EventTypeRecordExists(eventId, "event_Bounty")) { return; }
+
+            using (MySqlConnection mysqlCnn = new MySqlConnection(this.connStr))
+            {
+                using (MySqlCommand mysqlCmd = mysqlCnn.CreateCommand())
+                {
+                    mysqlCmd.CommandType = CommandType.Text;
+                    mysqlCmd.CommandText = "INSERT INTO event_Bounty (event_id, event_timestamp, Target, TotalReward, " +
+                        "VictimFaction, SharedWithOthers, Faction, Reward)" +
+                        "VALUES (@event_id, @event_timestamp, @Target, @TotalReward, @VictimFaction, @SharedWithOthers, " +
+                        "@Faction, @Reward)";
+                    try
+                    {
+                        mysqlCmd.Parameters.Add(NewParam_EventId(eventId));
+                        mysqlCmd.Parameters.Add(NewParam_EventTimestamp(eventData));
+                        mysqlCmd.Parameters.Add(NewParam("@Target", eventData["Target"], MySqlDbType.VarChar, 100));
+                        mysqlCmd.Parameters.Add(NewParam("@TotalReward", eventData["TotalReward"], MySqlDbType.Int64, 0));
+                        mysqlCmd.Parameters.Add(NewParam("@VictimFaction", eventData["VictimFaction"], MySqlDbType.VarChar, 100));
+                        mysqlCmd.Parameters.Add(NewParam("@SharedWithOthers", eventData["SharedWithOthers"], MySqlDbType.Int64, 0));
+                        mysqlCmd.Parameters.Add(NewParam("@Faction", eventData["Faction"], MySqlDbType.VarChar, 100));
+                        mysqlCmd.Parameters.Add(NewParam("@Reward", eventData["Reward"], MySqlDbType.Int64, 0));
+                        mysqlCnn.Open();
+                        mysqlCmd.ExecuteNonQuery();
+                        // Rewards
+                        if (eventData["Rewards"] != null && eventData["Rewards"].Type == JTokenType.Array)
+                            for (int idx = 0; idx < eventData["Rewards"].Count; idx++)
+                            {
+                                dynamic reward = eventData["Rewards"][idx];
+                                CreateEvent_Bounty_Rewards(eventId, idx, reward);
+                            }
+                    }
+                    catch (Exception ex)
+                    {
+                        LogMessage(String.Format("CreateEvent_Bounty: Exception, {0}", ex.Message), eventId);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Creates a bounty reward record.
+        /// </summary>
+        /// <param name="eventId">Event ID</param>
+        /// <param name="eventLine">JSON event data</param>
+        private void CreateEvent_Bounty_Rewards(int eventId, int idx, dynamic reward)
+        {
+            // TODO: if (EventTypeRecordExists(eventId, "event_Bounty_Reward")) { return; }
+            //       Ok, going to ignore errors for now, but we need a function to check sub-event records with more than the event_id as the primary key!
+
+            using (MySqlConnection mysqlCnn = new MySqlConnection(this.connStr))
+            {
+                using (MySqlCommand mysqlCmd = mysqlCnn.CreateCommand())
+                {
+                    mysqlCmd.CommandType = CommandType.Text;
+                    mysqlCmd.CommandText = "INSERT IGNORE INTO event_Bounty_Rewards (event_id, idx, Faction, Reward) " +
+                        "VALUES (@event_id, @idx, @Faction, @Reward)";
+                    try
+                    {
+                        mysqlCmd.Parameters.Add(NewParam_EventId(eventId));
+                        mysqlCmd.Parameters.Add(NewParamStr("@idx", idx.ToString(), MySqlDbType.Int32, 0));
+                        mysqlCmd.Parameters.Add(NewParam("@Faction", reward["Faction"], MySqlDbType.VarChar, 100));
+                        mysqlCmd.Parameters.Add(NewParam("@Reward", reward["Reward"], MySqlDbType.Int64, 0));
+                        mysqlCnn.Open();
+                        mysqlCmd.ExecuteNonQuery();
+                    }
+                    catch (Exception ex)
+                    {
+                        LogMessage(String.Format("CreateEvent_Bounty_Rewards: Exception, {0}", ex.Message), eventId);
                     }
                 }
             }
