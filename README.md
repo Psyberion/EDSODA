@@ -1,6 +1,6 @@
 # README #
 
-### What is this repository for? ###
+### About This Repository ###
 
 * EDSODA Version: 1.0.23-a (Elite Dangerous Ships Onboard Data Acquisition)
 * EDSODA is a NetCore 3.1 application which parses all of a player's Elite Dangerous journal files, containing past and also current details of events as they occur in the game, and stores the information as structured data in a relational database (EDSODS).
@@ -8,7 +8,7 @@
 * Currently the EDSODA application has been developed so far to run on Windows 10. But because the application is designed to be running on the same hardware on which Elite Dangerous is being played, the aim is to have this working on Linux and MacOs as well.
 * EDSODA *requires* a configured instance of the EDSODS MySQL database, available in the EDSODS repository, as it will need to connect to this to start building the player's database of related journal data. EDSODS does not have to be hosted on the same machine as EDSODA, the database can be hosted on another machine, even on another operating system, providing the machine running EDSODA is able to connect to EDSODS. Personally, I run EDSODA on my Windows 10 PC where I run Elite Dangerous, and I have EDSODS running on a networked Linux box where I also run the interface software, EDSOM, for quering and displaying the data.
 
-### How do I get set up? ###
+### Set Up ###
 
 * Summary of set up
 
@@ -46,6 +46,6 @@ Tests are not included at this time.
 
 The application executable and config file will be located in the EDSODA\bin\Debug or EDSODA\bin\Release folders once you build the solution/project in Visual Studio. The application can be run directly from there or copied to an appropriately named folder under "C:\Program Files" if preferred. There is currently no specific deployment process.
 
-### Who do I talk to? ###
+### Contact ###
 
 * Repo owner/admin
