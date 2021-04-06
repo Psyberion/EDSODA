@@ -1,5 +1,4 @@
-# EDSODA #
-## Elite Dangerous Ships Onboard Data Acquisition ##
+# EDSODA (ED Ships Onboard Data Acquisition) #
 
 ### About This Repository ###
 
