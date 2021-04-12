@@ -641,6 +641,9 @@ namespace EDSODA
                 case "Bounty":
                     CreateEvent_Bounty(eventId, eventData);
                     break;
+                case "BuyAmmo":
+                    CreateEvent_BuyAmmo(eventId, eventData);
+                    break;
                 case "Commander":
                     CreateEvent_Commander(eventId, eventData);
                     break;
@@ -951,13 +954,13 @@ namespace EDSODA
                 using (MySqlCommand mysqlCmd = mysqlCnn.CreateCommand())
                 {
                     mysqlCmd.CommandType = CommandType.Text;
-                    mysqlCmd.CommandText = "INSERT INTO event_AsteroidCracked (event_id, event_timestamp, Body) " +
-                        "VALUES (@event_id, @event_timestamp, @Body)";
+                    mysqlCmd.CommandText = "INSERT INTO event_BuyAmmo (event_id, event_timestamp, Cost) " +
+                        "VALUES (@event_id, @event_timestamp, @Cost)";
                     try
                     {
                         mysqlCmd.Parameters.Add(NewParam_EventId(eventId));
                         mysqlCmd.Parameters.Add(NewParam_EventTimestamp(eventData));
-                        mysqlCmd.Parameters.Add(NewParam("@Body", eventData["Body"], MySqlDbType.VarChar, 100));
+                        mysqlCmd.Parameters.Add(NewParam("@Cost", eventData["Cost"], MySqlDbType.Int64, 0));
                         mysqlCnn.Open();
                         mysqlCmd.ExecuteNonQuery();
                     }
