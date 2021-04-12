@@ -1,4 +1,21 @@
-﻿using System;
+﻿/*
+    EDSODA - Elite Dangerous Ships Onboard Data Acquisition
+    Copyright (C) 2021  David McMurray
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
@@ -915,6 +932,38 @@ namespace EDSODA
                     catch (Exception ex)
                     {
                         LogMessage(String.Format("CreateEvent_Bounty_Rewards: Exception, {0}", ex.Message), eventId);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Creates a buy ammo record.
+        /// </summary>
+        /// <param name="eventId">Event ID</param>
+        /// <param name="eventLine">JSON event data</param>
+        private void CreateEvent_BuyAmmo(int eventId, dynamic eventData)
+        {
+            if (EventTypeRecordExists(eventId, "event_BuyAmmo")) { return; }
+
+            using (MySqlConnection mysqlCnn = new MySqlConnection(this.connStr))
+            {
+                using (MySqlCommand mysqlCmd = mysqlCnn.CreateCommand())
+                {
+                    mysqlCmd.CommandType = CommandType.Text;
+                    mysqlCmd.CommandText = "INSERT INTO event_AsteroidCracked (event_id, event_timestamp, Body) " +
+                        "VALUES (@event_id, @event_timestamp, @Body)";
+                    try
+                    {
+                        mysqlCmd.Parameters.Add(NewParam_EventId(eventId));
+                        mysqlCmd.Parameters.Add(NewParam_EventTimestamp(eventData));
+                        mysqlCmd.Parameters.Add(NewParam("@Body", eventData["Body"], MySqlDbType.VarChar, 100));
+                        mysqlCnn.Open();
+                        mysqlCmd.ExecuteNonQuery();
+                    }
+                    catch (Exception ex)
+                    {
+                        LogMessage(String.Format("CreateEvent_BuyAmmo: Exception, {0}", ex.Message), eventId);
                     }
                 }
             }
