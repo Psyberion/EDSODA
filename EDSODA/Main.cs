@@ -644,6 +644,9 @@ namespace EDSODA
                 case "BuyAmmo":
                     CreateEvent_BuyAmmo(eventId, eventData);
                     break;
+                case "BuyDrones":
+                    CreateEvent_BuyDrones(eventId, eventData);
+                    break;
                 case "Commander":
                     CreateEvent_Commander(eventId, eventData);
                     break;
@@ -967,6 +970,41 @@ namespace EDSODA
                     catch (Exception ex)
                     {
                         LogMessage(String.Format("CreateEvent_BuyAmmo: Exception, {0}", ex.Message), eventId);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Creates a buy drones record.
+        /// </summary>
+        /// <param name="eventId">Event ID</param>
+        /// <param name="eventLine">JSON event data</param>
+        private void CreateEvent_BuyDrones(int eventId, dynamic eventData)
+        {
+            if (EventTypeRecordExists(eventId, "event_BuyDrones")) { return; }
+
+            using (MySqlConnection mysqlCnn = new MySqlConnection(this.connStr))
+            {
+                using (MySqlCommand mysqlCmd = mysqlCnn.CreateCommand())
+                {
+                    mysqlCmd.CommandType = CommandType.Text;
+                    mysqlCmd.CommandText = "INSERT INTO event_BuyDrones (event_id, event_timestamp, Type, Count, BuyPrice, TotalCost) " +
+                        "VALUES (@event_id, @event_timestamp, @Type, @Count, @BuyPrice, @TotalCost)";
+                    try
+                    {
+                        mysqlCmd.Parameters.Add(NewParam_EventId(eventId));
+                        mysqlCmd.Parameters.Add(NewParam_EventTimestamp(eventData));
+                        mysqlCmd.Parameters.Add(NewParam("@Type", eventData["Type"], MySqlDbType.VarChar, 100));
+                        mysqlCmd.Parameters.Add(NewParam("@Count", eventData["Count"], MySqlDbType.Int32, 0));
+                        mysqlCmd.Parameters.Add(NewParam("@BuyPrice", eventData["BuyPrice"], MySqlDbType.Int64, 0));
+                        mysqlCmd.Parameters.Add(NewParam("@TotalCost", eventData["TotalCost"], MySqlDbType.Int64, 0));
+                        mysqlCnn.Open();
+                        mysqlCmd.ExecuteNonQuery();
+                    }
+                    catch (Exception ex)
+                    {
+                        LogMessage(String.Format("CreateEvent_BuyDrones: Exception, {0}", ex.Message), eventId);
                     }
                 }
             }
