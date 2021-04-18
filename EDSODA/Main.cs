@@ -647,6 +647,9 @@ namespace EDSODA
                 case "BuyDrones":
                     CreateEvent_BuyDrones(eventId, eventData);
                     break;
+                case "Cargo":
+                    CreateEvent_Cargo(eventId, eventData);
+                    break;
                 case "Commander":
                     CreateEvent_Commander(eventId, eventData);
                     break;
@@ -1005,6 +1008,85 @@ namespace EDSODA
                     catch (Exception ex)
                     {
                         LogMessage(String.Format("CreateEvent_BuyDrones: Exception, {0}", ex.Message), eventId);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Creates a cargo record.
+        /// </summary>
+        /// <param name="eventId">Event ID</param>
+        /// <param name="eventLine">JSON event data</param>
+        private void CreateEvent_Cargo(int eventId, dynamic eventData)
+        {
+            if (EventTypeRecordExists(eventId, "event_Cargo")) { return; }
+
+            using (MySqlConnection mysqlCnn = new MySqlConnection(this.connStr))
+            {
+                using (MySqlCommand mysqlCmd = mysqlCnn.CreateCommand())
+                {
+                    mysqlCmd.CommandType = CommandType.Text;
+                    mysqlCmd.CommandText = "INSERT INTO event_Cargo (event_id, event_timestamp, Vessel, Count) " +
+                        "VALUES (@event_id, @event_timestamp, @Vessel, @Count)";
+                    try
+                    {
+                        mysqlCmd.Parameters.Add(NewParam_EventId(eventId));
+                        mysqlCmd.Parameters.Add(NewParam_EventTimestamp(eventData));
+                        mysqlCmd.Parameters.Add(NewParam("@Vessel", eventData["Vessel"], MySqlDbType.VarChar, 100));
+                        mysqlCmd.Parameters.Add(NewParam("@Count", eventData["Count"], MySqlDbType.Int32, 0));
+                        mysqlCnn.Open();
+                        mysqlCmd.ExecuteNonQuery();
+                        // Inventory
+                        if (eventData["Inventory"] != null && eventData["Inventory"].Type == JTokenType.Array)
+                            for (int idx = 0; idx < eventData["Inventory"].Count; idx++)
+                            {
+                                dynamic inventory = eventData["Inventory"][idx];
+                                CreateEvent_Cargo_Inventory(eventId, idx, inventory);
+                            }
+                        // TODO: Also check Cargo.json file for a matching entry if the service is running
+                    }
+                    catch (Exception ex)
+                    {
+                        LogMessage(String.Format("CreateEvent_Cargo: Exception, {0}", ex.Message), eventId);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Creates a cargo inventory record.
+        /// </summary>
+        /// <param name="eventId">Event ID</param>
+        /// <param name="eventLine">JSON event data</param>
+        private void CreateEvent_Cargo_Inventory(int eventId, int idx, dynamic inventory)
+        {
+            // TODO: if (EventTypeRecordExists(eventId, "event_Cargo_Inventory")) { return; }
+            //       Ok, going to ignore errors for now, but we need a function to check sub-event records with more than the event_id as the primary key!
+
+            using (MySqlConnection mysqlCnn = new MySqlConnection(this.connStr))
+            {
+                using (MySqlCommand mysqlCmd = mysqlCnn.CreateCommand())
+                {
+                    mysqlCmd.CommandType = CommandType.Text;
+                    mysqlCmd.CommandText = "INSERT IGNORE INTO event_Cargo_Inventory (event_id, idx, Name, Name_Localised, " +
+                        "MissionID, Count, Stolen) " +
+                        "VALUES (@event_id, @idx, @Name, @Name_Localised, @MissionID, @Count, @Stolen)";
+                    try
+                    {
+                        mysqlCmd.Parameters.Add(NewParam_EventId(eventId));
+                        mysqlCmd.Parameters.Add(NewParamStr("@idx", idx.ToString(), MySqlDbType.Int32, 0));
+                        mysqlCmd.Parameters.Add(NewParam("@Name", inventory["Name"], MySqlDbType.VarChar, 100));
+                        mysqlCmd.Parameters.Add(NewParam("@Name_Localised", inventory["Name_Localised"], MySqlDbType.VarChar, 100));
+                        mysqlCmd.Parameters.Add(NewParam("@MissionID", inventory["MissionID"], MySqlDbType.Int64, 0));
+                        mysqlCmd.Parameters.Add(NewParam("@Count", inventory["Count"], MySqlDbType.Int32, 0));
+                        mysqlCmd.Parameters.Add(NewParam("@Stolen", inventory["Stolen"], MySqlDbType.VarChar, 1));
+                        mysqlCnn.Open();
+                        mysqlCmd.ExecuteNonQuery();
+                    }
+                    catch (Exception ex)
+                    {
+                        LogMessage(String.Format("CreateEvent_Cargo_Inventory: Exception, {0}", ex.Message), eventId);
                     }
                 }
             }
