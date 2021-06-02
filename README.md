@@ -44,7 +44,7 @@ Tests are not included at this time.
 
 * Deployment instructions
 
-The application executable and config file will be located in the EDSODA\bin\Debug or EDSODA\bin\Release folders once you build the solution/project in Visual Studio. The application can be run directly from there or copied to an appropriately named folder under "C:\Program Files" if preferred. There is currently no specific deployment process.
+The application executable and config file will be located in the EDSODA\\bin\\Debug or EDSODA\\bin\\Release folders once you build the solution/project in Visual Studio. The application can be run directly from there or copied to an appropriately named folder under "C:\\Program Files" if preferred. There is currently no specific deployment process.
 
 ### Contact ###
 
