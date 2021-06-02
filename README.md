@@ -18,7 +18,7 @@ The application comprises the EDSODA.sln solution file and the EDSODA project fo
 
 The EDSODA project folder contains an example configuration file, named 'App.config.example'. It is suggested that you make a copy of this file and name it 'App.config' in the same location. Open the new App.config file in Visual Studio or a text editor, and edit the settings as described below.
 
-In the <connectionStrings>...</connectionStrings> section there is an entry named 'EDSODS', this refers to the Elite Dangerous Ships Onboard Data Store and is essentially where all the parsed journal event data will be stored. You will need to visit the EDSODS repository for details on setting up that MySQL database ready for use by EDSODA and other parts of the EDSIS project. The example App.config file provides one possible set of connection details with example values, but you can change this to provide your own valid connection details for your own EDSODS MySQL instance.
+In the &lt;connectionStrings&gt;...</connectionStrings> section there is an entry named 'EDSODS', this refers to the Elite Dangerous Ships Onboard Data Store and is essentially where all the parsed journal event data will be stored. You will need to visit the EDSODS repository for details on setting up that MySQL database ready for use by EDSODA and other parts of the EDSIS project. The example App.config file provides one possible set of connection details with example values, but you can change this to provide your own valid connection details for your own EDSODS MySQL instance.
 
 In the <appSettings>...</appSettings> section there are a couple of Key/Value settings...
 
