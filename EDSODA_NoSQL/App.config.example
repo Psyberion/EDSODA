@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <connectionStrings>
+    <!-- Update connection string with your details for the EDSODS database -->
+    <add name="EDSODS" connectionString="server=MyServer;port=3306;database=edsods;user id=MyUser;password=MyPassword"/>
+  </connectionStrings>
+  <appSettings>
+    <!-- Update journalPath with the location of your Elite Dangerous journal files -->
+    <add key="journalPath" value="C:\Users\MyUser\Saved Games\Frontier Developments\Elite Dangerous"/>
+    <add key="ReprocessEvents" value=""/>
+  </appSettings>
+</configuration>
